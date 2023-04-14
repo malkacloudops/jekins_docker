@@ -26,5 +26,17 @@ pipeline {
                 }
             }
         }
+
+         stage('Push') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    
+
         }
 }
