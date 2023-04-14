@@ -22,7 +22,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    powershell 'docker build . -t jenkins/dockerimage:0.2'
+                    powershell 'docker build . -t jenkins/dockerimage:0.'
                 }
             }
         }
