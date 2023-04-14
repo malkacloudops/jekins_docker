@@ -19,27 +19,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE, "-f ${DOCKERFILE_PATH} .")
+                    sh 'docker build -t jenkins/dockerimage'
                 }
             }
         }
 
-        stage('Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
     }
-
-    post {
-        always {
-            script {
-                dockerImage.remove()
-            }
-        }
-    }
-}
