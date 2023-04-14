@@ -1,10 +1,44 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "undying25/jenkins_docker"
+        DOCKERFILE_PATH = "Dockerfile"
+        DOCKER_REGISTRY_CREDENTIALS = credentials('c8a8f03b-4950-4a7f-8328-cf7a186823fe')
+        GIT_REPO_URL = "https://github.com/malkacloudops/jekins_docker.git"
+        GIT_CREDENTIALS = credentials('c8a8f03b-4950-4a7f-8328-cf7a186823fe')
+    }
+
     stages {
-        stage('Hello') {
+        stage('Checkout') {
             steps {
-                powershell 'Write-Output "First time running powershell on Jenkins"'
+                git branch: 'main', credentialsId: "${GIT_CREDENTIALS}", url: "${GIT_REPO_URL}"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE, "-f ${DOCKERFILE_PATH} .")
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                dockerImage.remove()
             }
         }
     }
