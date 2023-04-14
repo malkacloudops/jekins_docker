@@ -10,6 +10,9 @@ pipeline {
     }
 
     stages {
+
+
+        
         stage('Checkout') {
             steps {
                 git branch: 'main', credentialsId: "${GIT_CREDENTIALS}", url: "${GIT_REPO_URL}"
@@ -22,9 +25,8 @@ pipeline {
                     sh 'docker build -t jenkins/dockerimage'
                 }
             }
-        }
+        }}
 
 
-    }}
-    }
-
+    
+    
